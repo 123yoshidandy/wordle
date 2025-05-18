@@ -3,49 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Game</title>
+    <title>言葉探し - 日本語版 Wordle</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Wordle</h1>
+        <h1>言葉探し</h1>
         <div id="game-container">
             <div id="board"></div>
             <div id="keyboard">
                 <div class="keyboard-row">
-                    <button data-key="Q">Q</button>
-                    <button data-key="W">W</button>
-                    <button data-key="E">E</button>
-                    <button data-key="R">R</button>
-                    <button data-key="T">T</button>
-                    <button data-key="Y">Y</button>
-                    <button data-key="U">U</button>
-                    <button data-key="I">I</button>
-                    <button data-key="O">O</button>
-                    <button data-key="P">P</button>
+                    <button data-key="あ">あ</button>
+                    <button data-key="い">い</button>
+                    <button data-key="う">う</button>
+                    <button data-key="え">え</button>
+                    <button data-key="お">お</button>
+                    <button data-key="か">か</button>
+                    <button data-key="き">き</button>
+                    <button data-key="く">く</button>
+                    <button data-key="け">け</button>
+                    <button data-key="こ">こ</button>
                 </div>
                 <div class="keyboard-row">
-                    <div class="spacer half"></div>
-                    <button data-key="A">A</button>
-                    <button data-key="S">S</button>
-                    <button data-key="D">D</button>
-                    <button data-key="F">F</button>
-                    <button data-key="G">G</button>
-                    <button data-key="H">H</button>
-                    <button data-key="J">J</button>
-                    <button data-key="K">K</button>
-                    <button data-key="L">L</button>
-                    <div class="spacer half"></div>
+                    <button data-key="さ">さ</button>
+                    <button data-key="し">し</button>
+                    <button data-key="す">す</button>
+                    <button data-key="せ">せ</button>
+                    <button data-key="そ">そ</button>
+                    <button data-key="た">た</button>
+                    <button data-key="ち">ち</button>
+                    <button data-key="つ">つ</button>
+                    <button data-key="て">て</button>
+                    <button data-key="と">と</button>
                 </div>
                 <div class="keyboard-row">
-                    <button data-key="ENTER" class="wide-button">Enter</button>
-                    <button data-key="Z">Z</button>
-                    <button data-key="X">X</button>
-                    <button data-key="C">C</button>
-                    <button data-key="V">V</button>
-                    <button data-key="B">B</button>
-                    <button data-key="N">N</button>
-                    <button data-key="M">M</button>
+                    <button data-key="な">な</button>
+                    <button data-key="に">に</button>
+                    <button data-key="ぬ">ぬ</button>
+                    <button data-key="ね">ね</button>
+                    <button data-key="の">の</button>
+                    <button data-key="は">は</button>
+                    <button data-key="ひ">ひ</button>
+                    <button data-key="ふ">ふ</button>
+                    <button data-key="へ">へ</button>
+                    <button data-key="ほ">ほ</button>
+                </div>
+                <div class="keyboard-row">
+                    <button data-key="ま">ま</button>
+                    <button data-key="み">み</button>
+                    <button data-key="む">む</button>
+                    <button data-key="め">め</button>
+                    <button data-key="も">も</button>
+                    <button data-key="や">や</button>
+                    <button data-key="ゆ">ゆ</button>
+                    <button data-key="よ">よ</button>
+                    <button data-key="ら">ら</button>
+                    <button data-key="り">り</button>
+                </div>
+                <div class="keyboard-row">
+                    <button data-key="る">る</button>
+                    <button data-key="れ">れ</button>
+                    <button data-key="ろ">ろ</button>
+                    <button data-key="わ">わ</button>
+                    <button data-key="を">を</button>
+                    <button data-key="ん">ん</button>
+                    <button data-key="が">が</button>
+                    <button data-key="ぎ">ぎ</button>
+                    <button data-key="ぐ">ぐ</button>
+                    <button data-key="げ">げ</button>
+                </div>
+                <div class="keyboard-row">
+                    <button data-key="ご">ご</button>
+                    <button data-key="ざ">ざ</button>
+                    <button data-key="じ">じ</button>
+                    <button data-key="ず">ず</button>
+                    <button data-key="ぜ">ぜ</button>
+                    <button data-key="ぞ">ぞ</button>
+                    <button data-key="だ">だ</button>
+                    <button data-key="ぢ">ぢ</button>
+                    <button data-key="づ">づ</button>
+                    <button data-key="で">で</button>
+                </div>
+                <div class="keyboard-row">
+                    <button data-key="ど">ど</button>
+                    <button data-key="ば">ば</button>
+                    <button data-key="び">び</button>
+                    <button data-key="ぶ">ぶ</button>
+                    <button data-key="べ">べ</button>
+                    <button data-key="ぼ">ぼ</button>
+                    <button data-key="ぱ">ぱ</button>
+                    <button data-key="ぴ">ぴ</button>
+                    <button data-key="ぷ">ぷ</button>
+                    <button data-key="ぺ">ぺ</button>
+                </div>
+                <div class="keyboard-row">
+                    <button data-key="ENTER" class="wide-button">決定</button>
+                    <button data-key="ぽ">ぽ</button>
+                    <button data-key="っ">っ</button>
+                    <button data-key="ー">ー</button>
                     <button data-key="BACKSPACE" class="wide-button">⌫</button>
                 </div>
             </div>

@@ -54,14 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleKeyDown(e) {
         if (state.gameOver) return;
         
-        const key = e.key.toUpperCase();
-        
-        if (key === 'ENTER') {
+        if (e.key === 'Enter') {
             handleEnterKey();
-        } else if (key === 'BACKSPACE' || key === 'DELETE' || key === 'ARROWLEFT') {
+        } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'ArrowLeft') {
             handleBackspace();
-        } else if (/^[A-Z]$/.test(key)) {
-            handleLetter(key);
+        } else if (/^[ぁ-んー]$/.test(e.key)) {
+            // ひらがな入力を処理
+            handleLetter(e.key);
         }
     }
     
