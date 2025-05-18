@@ -101,11 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const word = getCurrentWord();
         
-        if (!isValidWord(word)) {
-            showMessage('無効な単語です');
-            return;
-        }
-        
         flipTiles();
         checkGameEnd();
     }
@@ -113,11 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 現在の行の単語を取得
     function getCurrentWord() {
         return state.grid[state.currentRow].join('');
-    }
-    
-    // 単語が有効かチェック
-    function isValidWord(word) {
-        return VALID_WORDS.includes(word);
     }
     
     // タイルをフリップしてチェックする
