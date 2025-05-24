@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ゲームの状態
     const state = {
         secret: '',
-        grid: Array(6).fill().map(() => Array(5).fill('')),
+        grid: Array(10).fill().map(() => Array(5).fill('')),
         currentRow: 0,
         currentCol: 0,
         gameOver: false
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const board = document.getElementById('board');
         board.innerHTML = '';
         
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 10; i++) {
             const row = document.createElement('div');
             row.classList.add('row');
             row.dataset.row = i;
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            if (state.currentRow >= 6) {
+            if (state.currentRow >= 10) {
                 showMessage(`ゲームオーバー! 正解は ${state.secret} でした`);
                 state.gameOver = true;
                 return;
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('秘密の単語:', state.secret);
         
         // 状態をリセット
-        state.grid = Array(6).fill().map(() => Array(5).fill(''));
+        state.grid = Array(10).fill().map(() => Array(5).fill(''));
         state.currentRow = 0;
         state.currentCol = 0;
         state.gameOver = false;
