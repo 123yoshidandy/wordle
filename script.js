@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < 6; i++) {
             const row = document.createElement('div');
             row.classList.add('row');
+            row.dataset.row = i;
             
             for (let j = 0; j < 5; j++) {
                 const tile = document.createElement('div');
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
         
         state.currentCol++;
+        updateCurrentRowFocus();
     }
     
     // バックスペースの処理
@@ -90,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const tile = document.querySelector(`[data-row="${state.currentRow}"][data-col="${state.currentCol}"]`);
         tile.textContent = '';
+        updateCurrentRowFocus();
     }
     
     // Enterキーの処理
@@ -145,6 +148,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
+        // 現在の行（row）要素にフォーカススタイルを追加
+        const currentRowElement = document.querySelector(`.row[data-row="${row}"]`);
+        if (currentRowElement) {
+            currentRowElement.classList.add('active-row');
+            setTimeout(() => {
+                currentRowElement.classList.remove('active-row');
+            }, 2500);
+        }
+        
         // アニメーションとともにタイルをフリップ
         for (let i = 0; i < 5; i++) {
             const tile = tiles[i];
@@ -157,11 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     tile.classList.add(status);
                     updateKeyboard(letter, status);
                 }, 250);
-            }, i * 500);
+            }, i * 300); // アニメーション速度を速くする
         }
         
         state.currentRow++;
         state.currentCol = 0;
+        
+        // 少し遅延してから次の行にフォーカスを移す
+        setTimeout(() => {
+            updateCurrentRowFocus();
+        }, 1500);
     }
     
     // キーボードの色を更新
@@ -203,8 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function showMessage(msg) {
         const messageEl = document.getElementById('message');
         messageEl.textContent = msg;
+        messageEl.style.opacity = '1';
+        
         setTimeout(() => {
-            messageEl.textContent = '';
+            messageEl.style.opacity = '0';
+            setTimeout(() => {
+                messageEl.textContent = '';
+            }, 300);
         }, 4000);
     }
     
@@ -225,6 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // ボードをリセット
         initializeBoard();
         
+        // 現在の行のフォーカスを更新
+        updateCurrentRowFocus();
+        
         // キーボードをリセット
         const keys = document.querySelectorAll('.keyboard-row button');
         for (let i = 0; i < keys.length; i++) {
@@ -233,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // メッセージをクリア
         document.getElementById('message').textContent = '';
+        document.getElementById('message').style.opacity = '0';
         
         showMessage('新しいゲームを開始しました');
     }
@@ -240,8 +266,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // 新しいゲームボタンのイベントリスナー
     document.getElementById('new-game').addEventListener('click', startNewGame);
     
+    // ヘルプモーダルのセットアップ
+    function setupModal() {
+        const infoButton = document.getElementById('info-button');
+        const infoModal = document.getElementById('info-modal');
+        const closeButton = document.getElementById('close-info');
+        
+        if (!infoButton || !infoModal || !closeButton) {
+            console.error('モーダル関連の要素が見つかりません');
+            return;
+        }
+        
+        infoButton.addEventListener('click', () => {
+            infoModal.classList.remove('hidden');
+        });
+        
+        closeButton.addEventListener('click', () => {
+            infoModal.classList.add('hidden');
+            console.log('モーダルを閉じました');
+        });
+        
+        // モーダル外をクリックしても閉じる
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                infoModal.classList.add('hidden');
+            }
+        });
+        
+        // ESCキーでも閉じられるようにする
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !infoModal.classList.contains('hidden')) {
+                infoModal.classList.add('hidden');
+            }
+        });
+        
+        console.log('モーダル機能を設定しました');
+    }
+    
     // ゲームの初期化
     initializeBoard();
     setupKeyboard();
     startNewGame();
+    setupModal();
+    
+    // 現在の行にフォーカススタイルを適用する
+    function updateCurrentRowFocus() {
+        // 全ての行からアクティブクラスを削除
+        document.querySelectorAll('.row').forEach(row => {
+            row.classList.remove('current-row');
+        });
+        
+        // 現在の行にアクティブクラスを追加
+        const currentRow = document.querySelector(`.row[data-row="${state.currentRow}"]`);
+        if (currentRow && !state.gameOver) {
+            currentRow.classList.add('current-row');
+        }
+    }
 });

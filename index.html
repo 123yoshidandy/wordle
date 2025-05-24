@@ -8,7 +8,45 @@
 </head>
 <body>
     <div class="container">
-        <h1>Wordle</h1>
+        <h1>Wordle<span class="jp-title">（日本語版）</span></h1>
+        <button id="info-button" class="info-button">遊び方</button>
+        <div id="info-modal" class="hidden">
+            <div class="modal-content">>
+                <h2>遊び方</h2>
+                <p>5文字のひらがなの単語を当ててください。6回まで挑戦できます。</p>
+                <div class="example">
+                    <div class="example-row">
+                        <div class="example-tile correct">あ</div>
+                        <div class="example-tile">い</div>
+                        <div class="example-tile">う</div>
+                        <div class="example-tile">え</div>
+                        <div class="example-tile">お</div>
+                    </div>
+                    <p>「あ」は正しい位置にあります（緑色）</p>
+                </div>
+                <div class="example">
+                    <div class="example-row">
+                        <div class="example-tile">か</div>
+                        <div class="example-tile present">き</div>
+                        <div class="example-tile">く</div>
+                        <div class="example-tile">け</div>
+                        <div class="example-tile">こ</div>
+                    </div>
+                    <p>「き」は単語に含まれますが位置が違います（黄色）</p>
+                </div>
+                <div class="example">
+                    <div class="example-row">
+                        <div class="example-tile">さ</div>
+                        <div class="example-tile">し</div>
+                        <div class="example-tile absent">す</div>
+                        <div class="example-tile">せ</div>
+                        <div class="example-tile">そ</div>
+                    </div>
+                    <p>「す」は単語に含まれていません（灰色）</p>
+                </div>
+                <button id="close-info" type="button">閉じる</button>
+            </div>
+        </div>
         <div id="game-container">
             <div id="board"></div>
             <div id="keyboard">
