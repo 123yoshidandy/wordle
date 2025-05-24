@@ -8,10 +8,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>Wordle<span class="jp-title">（日本語版）</span></h1>
-        <button id="info-button" class="info-button">遊び方</button>
+        <div class="header">
+            <div class="title-container">
+                <h1>Wordle<span class="jp-title">（日本語版）</span></h1>
+            </div>
+            <div class="buttons-container">
+                <button id="info-button" class="info-button">遊び方</button>
+                <button id="new-game" class="control-button">新規</button>
+            </div>
+        </div>
         <div id="info-modal" class="hidden">
-            <div class="modal-content">>
+            <div class="modal-content">
                 <h2>遊び方</h2>
                 <p>5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
                 <div class="example">
@@ -177,7 +184,6 @@
             </div>
         </div>
         <div id="message"></div>
-        <button id="new-game">新しいゲーム</button>
     </div>
     <script src="words.js"></script>
     <script src="script.js"></script>

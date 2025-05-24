@@ -19,12 +19,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 5px 10px;
 }
 
 h1 {
-    margin: 10px 0 20px;
-    text-align: center;
+    margin: 0;
+    text-align: left;
     font-size: 32px;
 }
 
@@ -32,8 +32,8 @@ h1 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 30px;
+    gap: 8px;
+    margin-bottom: 20px;
     width: 100%;
 }
 
@@ -42,7 +42,7 @@ h1 {
     grid-template-columns: repeat(5, 1fr);
     gap: 5px;
     width: 100%;
-    padding: 5px;
+    padding: 3px;
     position: relative;
 }
 
@@ -153,19 +153,22 @@ button.absent {
 }
 
 #message {
-    margin: 20px 0;
-    height: 30px;
+    margin: 10px 0;
+    height: auto;
     text-align: center;
     font-weight: bold;
     position: fixed;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
+    bottom: 70px;
+    left: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 8px;
     border-radius: 5px;
     z-index: 100;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #new-game {
@@ -199,6 +202,41 @@ button.absent {
 
 .info-button:hover {
     background-color: #538d4e;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.title-container {
+    flex: 1;
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
+.control-button {
+    padding: 8px 15px;
+    background-color: #538d4e;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    font-size: 14px;
+    height: auto;
+}
+
+.control-button:hover {
+    background-color: #62a75c;
 }
 
 #info-modal {
@@ -287,9 +325,9 @@ button.absent {
 
 @media (max-width: 650px) {
     .tile {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
+        width: 26px;
+        height: 26px;
+        font-size: 13px;
         border-width: 1px;
     }
     
@@ -305,51 +343,89 @@ button.absent {
     }
 
     h1 {
-        font-size: 24px;
-        margin: 5px 0 10px;
+        font-size: 20px;
+    }
+    
+    .jp-title {
+        font-size: 12px;
+    }
+    
+    .info-button, .control-button {
+        padding: 6px 10px;
+        font-size: 12px;
     }
     
     #board {
-        gap: 5px;
+        gap: 4px;
+        margin-bottom: 15px;
     }
     
     #board > .row {
-        padding: 3px;
+        padding: 2px;
     }
     
     .row {
         gap: 2px;
+    }
+    
+    #game-container {
+        margin-top: 5px;
     }
 }
 
 @media (max-width: 400px) {
     .tile {
-        width: 22px;
-        height: 22px;
-        font-size: 10px;
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
     }
     
     button {
-        height: 30px;
-        min-width: 18px;
-        font-size: 12px;
+        height: 28px;
+        min-width: 16px;
+        font-size: 11px;
         margin: 1px;
     }
     
     .wide-button {
-        font-size: 14px;
+        font-size: 13px;
     }
     
     h1 {
-        font-size: 20px;
+        font-size: 16px;
+    }
+    
+    .jp-title {
+        font-size: 9px;
+    }
+    
+    .info-button, .control-button {
+        padding: 4px 6px;
+        font-size: 10px;
     }
     
     #board {
-        gap: 3px;
+        gap: 2px;
+        margin-bottom: 10px;
     }
     
     .row {
-        gap: 2px;
+        gap: 1px;
+        padding: 1px;
+    }
+    
+    #message {
+        font-size: 12px;
+        padding: 6px;
+        bottom: 60px;
+    }
+    
+    .header {
+        margin-bottom: 10px;
+    }
+    
+    .buttons-container {
+        gap: 5px;
     }
 }
 

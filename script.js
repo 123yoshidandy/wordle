@@ -168,8 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     tile.classList.add(status);
                     updateKeyboard(letter, status);
-                }, 250);
-            }, i * 300); // アニメーション速度を速くする
+                }, 150);
+            }, i * 200); // アニメーション速度をさらに速く
         }
         
         state.currentRow++;
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 少し遅延してから次の行にフォーカスを移す
         setTimeout(() => {
             updateCurrentRowFocus();
-        }, 1500);
+        }, 800);
     }
     
     // キーボードの色を更新
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.gameOver = true;
                 return;
             }
-        }, 3000);
+        }, 1500);
     }
     
     // メッセージ表示
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 messageEl.textContent = '';
             }, 300);
-        }, 4000);
+        }, 2500);
     }
     
     // 新しいゲームを開始
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 新しいゲームボタンのイベントリスナー
-    document.getElementById('new-game').addEventListener('click', startNewGame);
+    document.querySelector('.control-button').addEventListener('click', startNewGame);
     
     // ヘルプモーダルのセットアップ
     function setupModal() {
