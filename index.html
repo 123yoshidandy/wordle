@@ -13,18 +13,27 @@
                 <h1>Wordle</h1>
             </div>
             <div class="buttons-container">
-                <div class="mode-toggle">
+                <div class="mode-toggle solo-only">
                     <button class="mode-button" data-mode="word">ことば</button>
                     <button class="mode-button" data-mode="pokemon">ポケモン</button>
                 </div>
-                <button id="info-button" class="info-button">遊び方</button>
-                <button id="new-game" class="control-button">新規</button>
+                <button id="info-button" class="info-button icon-button" aria-label="遊び方">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path d="M9.5 9.5a2.5 2.5 0 0 1 4.9.7c0 1.7-2.4 2.1-2.4 3.6"/>
+                        <circle cx="12" cy="17" r="0.6" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button id="new-game" class="control-button solo-only">新規</button>
+                <button id="online-button" class="control-button online-button solo-only">対戦</button>
+                <button id="room-button" class="control-button online-button online-only">部屋</button>
             </div>
         </div>
         <div id="info-modal" class="hidden">
             <div class="modal-content">
                 <h2>遊び方</h2>
                 <p id="rule-text">5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
+                <p class="rule-note">対戦では、全員が1つずつ答えを出し、そろったらいっせいに結果を公開します。先に当てた人の勝ちです。</p>
                 <div class="example">
                     <div class="example-row">
                         <div class="example-tile correct">あ</div>
@@ -58,7 +67,55 @@
                 <button id="close-info" type="button">閉じる</button>
             </div>
         </div>
+        <div id="online-modal" class="hidden">
+            <div class="modal-content online-content">
+                <div class="online-head">
+                    <h2>オンライン対戦</h2>
+                    <button id="online-close" type="button" class="close-x" aria-label="閉じる">×</button>
+                </div>
+                <div id="online-entry">
+                    <label class="online-field">
+                        <span>名前</span>
+                        <input id="online-name" maxlength="12" autocomplete="nickname">
+                    </label>
+                    <button id="online-create" type="button" class="primary-button">部屋を作る</button>
+                    <div class="online-join">
+                        <input id="online-code" inputmode="numeric" autocomplete="off" placeholder="部屋番号">
+                        <button id="online-join" type="button" class="primary-button">参加</button>
+                    </div>
+                </div>
+                <div id="online-room" class="hidden">
+                    <div class="online-code-row">
+                        <span>部屋番号</span>
+                        <strong id="online-room-code"></strong>
+                        <button id="online-invite" type="button" class="secondary-button">招待URLをコピー</button>
+                    </div>
+                    <p id="online-result" class="online-result hidden"></p>
+                    <ul id="online-players"></ul>
+                    <div class="mode-toggle online-mode">
+                        <button class="mode-button" data-online-mode="word">ことば</button>
+                        <button class="mode-button" data-online-mode="pokemon">ポケモン</button>
+                    </div>
+                    <div class="online-actions">
+                        <button id="online-start" type="button" class="primary-button">開始</button>
+                        <button id="online-ready" type="button" class="primary-button">もう1回</button>
+                        <button id="online-back" type="button" class="secondary-button">ロビーへ</button>
+                        <button id="online-leave" type="button" class="secondary-button">部屋を出る</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="player-modal" class="hidden">
+            <div class="modal-content player-content">
+                <div class="online-head">
+                    <h2 id="player-name"></h2>
+                    <button id="player-close" type="button" class="close-x" aria-label="閉じる">×</button>
+                </div>
+                <div id="player-board"></div>
+            </div>
+        </div>
         <div id="game-container">
+            <div id="opponents" class="hidden"></div>
             <div id="board"></div>
             <div id="keyboard">
                 <div class="keyboard-row">
@@ -189,8 +246,6 @@
         </div>
         <div id="message"></div>
     </div>
-    <script src="words.js"></script>
-    <script src="pokemon-names.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

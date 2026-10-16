@@ -1,5 +1,5 @@
 // ポケモンの日本語名（全世代）。カタカナと「ー」のみの名前
-const POKEMON_NAMES = [
+export const POKEMON_NAMES = [
     "フシギダネ",
     "フシギソウ",
     "フシギバナ",

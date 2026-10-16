@@ -264,7 +264,7 @@ button.absent {
     height: 46px;
 }
 
-#info-modal {
+#info-modal, #online-modal, #player-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -493,4 +493,336 @@ button.absent {
     0% { background-color: rgba(255, 255, 255, 0.03); }
     50% { background-color: rgba(255, 255, 255, 0.08); }
     100% { background-color: rgba(255, 255, 255, 0.03); }
+}
+
+/* ===== オンライン対戦 ===== */
+
+/* 1人プレイと部屋の中で、ヘッダーのボタンを切り替える */
+.online-only {
+    display: none;
+}
+
+body.in-room .online-only {
+    display: inline-block;
+}
+
+body.in-room .solo-only {
+    display: none;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+}
+
+.control-button.online-button {
+    background-color: #3b6db3;
+}
+
+.control-button.online-button:hover {
+    background-color: #4a7dc4;
+}
+
+/* 相手の進み具合 */
+#opponents {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.opponent {
+    flex: 0 1 auto;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 3px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background-color: #1f1f21;
+    border: 1px solid #3a3a3c;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+/* 名前でカードの幅を広げない（幅はマスの数で決める） */
+.opponent-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    width: 0;
+    min-width: 100%;
+    line-height: 1.2;
+}
+
+.opponent .mini-row {
+    width: auto;
+}
+
+.opponent .mini-tile {
+    font-size: 10px;
+}
+
+.opponent-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+.opponent-status {
+    color: #8fd18a;
+    white-space: nowrap;
+}
+
+.opponent[data-state="left"] {
+    opacity: 0.5;
+}
+
+.opponent[data-state="left"] .opponent-status {
+    color: #aaaaaa;
+}
+
+.mini-row {
+    display: grid;
+    gap: 2px;
+    width: 100%;
+}
+
+.mini-tile {
+    aspect-ratio: 1;
+    min-width: 0;
+    border: 1px solid #3a3a3c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.mini-tile.correct {
+    background-color: #538d4e;
+    border-color: #538d4e;
+}
+
+.mini-tile.present {
+    background-color: #b59f3b;
+    border-color: #b59f3b;
+}
+
+.mini-tile.absent {
+    background-color: #3a3a3c;
+    border-color: #3a3a3c;
+}
+
+/* 出したが、まだ公開されていない自分の答え */
+.row.pending .tile {
+    border-color: #565758;
+    color: #9a9a9c;
+}
+
+/* 部屋の画面 */
+.online-content, .player-content {
+    width: min(92vw, 360px);
+}
+
+.online-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.online-head h2 {
+    font-size: 20px;
+}
+
+.close-x {
+    flex-grow: 0;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 0 4px;
+    background: none;
+    font-size: 26px;
+    line-height: 1;
+}
+
+#online-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.online-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.online-field span {
+    white-space: nowrap;
+}
+
+#online-modal input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    background-color: #121213;
+    border: 2px solid #3a3a3c;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.online-join {
+    display: flex;
+    gap: 8px;
+}
+
+.primary-button, .secondary-button {
+    flex-grow: 0;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: 5px;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.primary-button {
+    background-color: #538d4e;
+}
+
+.secondary-button {
+    background-color: #3a3a3c;
+}
+
+.primary-button:disabled, .mode-button:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.online-code-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#online-room-code {
+    font-size: 24px;
+    letter-spacing: 2px;
+}
+
+.online-code-row .secondary-button {
+    margin-left: auto;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+.online-result {
+    margin-top: 12px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+#online-players {
+    list-style: none;
+    margin: 12px 0;
+    border-top: 1px solid #3a3a3c;
+}
+
+#online-players li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 2px;
+    border-bottom: 1px solid #3a3a3c;
+}
+
+#online-players li.me {
+    font-weight: bold;
+}
+
+.player-tag {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background-color: #3a3a3c;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.online-mode {
+    margin-bottom: 12px;
+}
+
+.online-mode .mode-button {
+    flex: 1;
+    padding: 8px 0;
+}
+
+.online-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.online-actions .primary-button {
+    flex: 1;
+}
+
+#player-board {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+#player-board .mini-tile {
+    font-size: 16px;
+}
+
+.rule-note {
+    margin-top: 8px;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+/* 縦が短い画面では、キーと余白を少し詰めて決定キーまで収める */
+@media (max-height: 620px) {
+    .keyboard-row button {
+        height: 26px;
+    }
+
+    #board {
+        margin-bottom: 6px;
+    }
+
+    #opponents {
+        margin-bottom: 4px;
+    }
+
+    .header {
+        margin-bottom: 4px;
+    }
+
+    .container {
+        padding-top: 2px;
+    }
+
+    #game-container {
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .opponent .mini-tile {
+        font-size: 9px;
+    }
+
 }
