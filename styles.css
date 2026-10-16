@@ -171,15 +171,6 @@ button.absent {
     margin-right: auto;
 }
 
-#new-game {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    background-color: #538d4e;
-    color: white;
-    cursor: pointer;
-}
 
 .jp-title {
     font-size: 18px;
@@ -196,8 +187,11 @@ button.absent {
     color: white;
     font-weight: bold;
     cursor: pointer;
-    margin-bottom: 15px;
     transition: background-color 0.3s;
+    font-size: 14px;
+    height: auto;
+    margin: 0;
+    flex-grow: 0;
 }
 
 .info-button:hover {
@@ -218,6 +212,7 @@ button.absent {
 
 .buttons-container {
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
@@ -233,10 +228,40 @@ button.absent {
     white-space: nowrap;
     font-size: 14px;
     height: auto;
+    margin: 0;
+    flex-grow: 0;
 }
 
 .control-button:hover {
     background-color: #62a75c;
+}
+
+/* モード切り替え */
+.mode-toggle {
+    display: flex;
+    gap: 2px;
+}
+
+.mode-button {
+    padding: 8px 12px;
+    margin: 0;
+    background-color: #3a3a3c;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 14px;
+    height: auto;
+    min-width: 0;
+    flex-grow: 0;
+}
+
+.mode-button.active {
+    background-color: #538d4e;
+}
+
+/* 6文字のときはマスを少し小さくする */
+#board.long-word .tile {
+    width: 46px;
+    height: 46px;
 }
 
 #info-modal {
@@ -350,9 +375,14 @@ button.absent {
         font-size: 12px;
     }
     
-    .info-button, .control-button {
+    .info-button, .control-button, .mode-button {
         padding: 6px 10px;
         font-size: 12px;
+    }
+
+    #board.long-word .tile {
+        width: 26px;
+        height: 26px;
     }
     
     #board {
@@ -399,9 +429,14 @@ button.absent {
         font-size: 9px;
     }
     
-    .info-button, .control-button {
+    .info-button, .control-button, .mode-button {
         padding: 4px 6px;
         font-size: 10px;
+    }
+
+    #board.long-word .tile {
+        width: 20px;
+        height: 20px;
     }
     
     #board {

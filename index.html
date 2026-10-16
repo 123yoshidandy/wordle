@@ -13,6 +13,10 @@
                 <h1>Wordle</h1>
             </div>
             <div class="buttons-container">
+                <div class="mode-toggle">
+                    <button class="mode-button" data-mode="word">ことば</button>
+                    <button class="mode-button" data-mode="pokemon">ポケモン</button>
+                </div>
                 <button id="info-button" class="info-button">遊び方</button>
                 <button id="new-game" class="control-button">新規</button>
             </div>
@@ -20,7 +24,7 @@
         <div id="info-modal" class="hidden">
             <div class="modal-content">
                 <h2>遊び方</h2>
-                <p>5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
+                <p id="rule-text">5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
                 <div class="example">
                     <div class="example-row">
                         <div class="example-tile correct">あ</div>
@@ -70,7 +74,7 @@
                     <button data-key="あ">あ</button>
                 </div>
                 <div class="keyboard-row">
-                    <button data-key="　">　</button>
+                    <button data-key="を">を</button>
                     <button data-key="り">り</button>
                     <button data-key="　">　</button>
                     <button data-key="み">み</button>
@@ -186,6 +190,7 @@
         <div id="message"></div>
     </div>
     <script src="words.js"></script>
+    <script src="pokemon-names.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
