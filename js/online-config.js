@@ -4,4 +4,4 @@
  * 手元（localhost）で開いたときはテスト用サーバー（npm run dev:server）につなぎ、?server=wss://... で接続先を変えられる
  */
 
-export const ONLINE_DEPLOYED_SERVER_URL = '';
+export const ONLINE_DEPLOYED_SERVER_URL = 'wss://938edhx0z8.execute-api.ap-northeast-1.amazonaws.com/prod';
