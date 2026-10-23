@@ -26,6 +26,39 @@ export function normalizeLetter(mode, ch) {
     return mode === 'pokemon' ? toKatakana(ch) : toHiragana(ch);
 }
 
+// 「゛゜小」キーで切り替わる字（清音 → 濁音・半濁音・小さい字 → 清音 の順に回る）
+const VARIANTS = {
+    'か': 'が', 'き': 'ぎ', 'く': 'ぐ', 'け': 'げ', 'こ': 'ご',
+    'さ': 'ざ', 'し': 'じ', 'す': 'ず', 'せ': 'ぜ', 'そ': 'ぞ',
+    'た': 'だ', 'ち': 'ぢ', 'つ': 'っづ', 'て': 'で', 'と': 'ど',
+    'は': 'ばぱ', 'ひ': 'びぴ', 'ふ': 'ぶぷ', 'へ': 'べぺ', 'ほ': 'ぼぽ',
+    'あ': 'ぁ', 'い': 'ぃ', 'う': 'ぅゔ', 'え': 'ぇ', 'お': 'ぉ',
+    'や': 'ゃ', 'ゆ': 'ゅ', 'よ': 'ょ', 'わ': 'ゎ'
+};
+const FAMILY = {};
+for (const [base, variants] of Object.entries(VARIANTS)) {
+    const family = [base, ...variants];
+    family.forEach(ch => { FAMILY[ch] = family; });
+}
+
+const isKatakana = (ch) => ch !== toHiragana(ch);
+
+// 清音の字（が → か、ッ → ツ）。切り替えのない字はそのまま
+export function baseKana(ch) {
+    const family = FAMILY[toHiragana(ch)];
+    if (!family) return ch;
+    return isKatakana(ch) ? toKatakana(family[0]) : family[0];
+}
+
+// 「゛゜小」で次の字にする。切り替えのない字なら null
+export function cycleVariant(ch) {
+    const hira = toHiragana(ch);
+    const family = FAMILY[hira];
+    if (!family) return null;
+    const next = family[(family.indexOf(hira) + 1) % family.length];
+    return isKatakana(ch) ? toKatakana(next) : next;
+}
+
 // 答えを選ぶ（random は 0 以上 1 未満を返す関数）
 export function pickAnswer(mode, random = Math.random) {
     const answers = mode === 'pokemon' ? POKEMON_NAMES : ANSWER_WORDS;

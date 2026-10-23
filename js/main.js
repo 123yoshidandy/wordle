@@ -3,11 +3,22 @@
  * 判定は logic.js、部屋と通信は online.js が行う
  */
 
-import { MAX_ROWS, checkGuess, evaluateGuess, normalizeLetter, pickAnswer } from './logic.js';
+import { MAX_ROWS, baseKana, checkGuess, cycleVariant, evaluateGuess, normalizeLetter, pickAnswer } from './logic.js';
 import { resultMessage, setupOnline } from './online.js';
 
 const MODE_STORAGE_KEY = 'wordle-mode';
 const RESULT_DELAY_MS = 1500; // 最後の行をめくり終えてから結果を出すまで
+const STATUS_RANK = { absent: 1, present: 2, correct: 3 };
+
+// キーの並び（右から あ か さ … の五十音。空文字は空き）。濁音・半濁音・小さい字は「゛゜小」で切り替える
+const KEY_ROWS = [
+    ['わ', 'ら', 'や', 'ま', 'は', 'な', 'た', 'さ', 'か', 'あ'],
+    ['を', 'り', '', 'み', 'ひ', 'に', 'ち', 'し', 'き', 'い'],
+    ['ん', 'る', 'ゆ', 'む', 'ふ', 'ぬ', 'つ', 'す', 'く', 'う'],
+    ['ー', 'れ', '', 'め', 'へ', 'ね', 'て', 'せ', 'け', 'え'],
+    ['', 'ろ', 'よ', 'も', 'ほ', 'の', 'と', 'そ', 'こ', 'お']
+];
+const BACKSPACE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-6-7z"/><path d="M11 9l6 6M17 9l-6 6"/></svg>';
 
 // ゲームの状態
 const state = {
@@ -44,13 +55,12 @@ function saveMode(mode) {
 function initializeBoard() {
     const board = document.getElementById('board');
     board.innerHTML = '';
-    board.classList.toggle('long-word', state.length >= 6);
+    board.style.setProperty('--len', state.length); // マスの大きさは CSS が、あいた場所と文字数から決める
 
     for (let i = 0; i < MAX_ROWS; i++) {
         const row = document.createElement('div');
         row.classList.add('row');
         row.dataset.row = i;
-        row.style.gridTemplateColumns = `repeat(${state.length}, 1fr)`;
 
         for (let j = 0; j < state.length; j++) {
             const tile = document.createElement('div');
@@ -74,8 +84,9 @@ function resetBoard() {
     initializeBoard();
     updateCurrentRowFocus();
 
-    document.querySelectorAll('.keyboard-row button').forEach(key => {
+    document.querySelectorAll('#keyboard .key').forEach(key => {
         key.classList.remove('correct', 'present', 'absent');
+        delete key.dataset.variant;
     });
 }
 
@@ -96,15 +107,7 @@ function fillRow(row, word) {
 function flipRow(row, word, statuses) {
     const tiles = rowTiles(row);
 
-    // 現在の行（row）要素にフォーカススタイルを追加
-    const rowElement = document.querySelector(`.row[data-row="${row}"]`);
-    if (rowElement) {
-        rowElement.classList.remove('pending');
-        rowElement.classList.add('active-row');
-        setTimeout(() => {
-            rowElement.classList.remove('active-row');
-        }, 2500);
-    }
+    document.querySelector(`.row[data-row="${row}"]`)?.classList.remove('pending');
 
     // アニメーションとともにタイルをフリップ
     for (let i = 0; i < statuses.length; i++) {
@@ -119,19 +122,21 @@ function flipRow(row, word, statuses) {
     }
 }
 
-// キーボードの色を更新
+// キーボードの色を更新（強い判定で上書きし、弱い判定では戻さない）
+// 濁音・半濁音・小さい字の判定は、清音のキーの角の点で見せる
 function updateKeyboard(letter, status) {
-    const key = document.querySelector(`button[data-key="${letter}"]`);
-    if (key) {
-        // すでに「correct」クラスがある場合は、より低い優先度のステータスで上書きしない
-        if (key.classList.contains('correct')) return;
+    const base = baseKana(letter);
+    const key = document.querySelector(`#keyboard .key[data-key="${base}"]`);
+    if (!key) return;
 
-        // 「present」クラスがある場合は、「absent」で上書きしない
-        if (key.classList.contains('present') && status === 'absent') return;
-
-        key.classList.remove('correct', 'present', 'absent');
-        key.classList.add(status);
+    if (base !== letter) {
+        if ((STATUS_RANK[key.dataset.variant] ?? 0) < STATUS_RANK[status]) key.dataset.variant = status;
+        return;
     }
+    const current = ['correct', 'present', 'absent'].find(name => key.classList.contains(name));
+    if ((STATUS_RANK[current] ?? 0) >= STATUS_RANK[status]) return;
+    key.classList.remove('correct', 'present', 'absent');
+    key.classList.add(status);
 }
 
 // 現在の行にフォーカススタイルを適用する
@@ -152,45 +157,76 @@ function canType() {
     return !state.gameOver && !state.online?.waiting;
 }
 
-// キーボードイベントのセットアップ
+// キーボードを組み立てる
 function setupKeyboard() {
-    const keys = document.querySelectorAll('.keyboard-row button');
+    const keyboard = document.getElementById('keyboard');
+    const addKey = (className, key, label, ariaLabel) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `key ${className}`.trim();
+        if (key) button.dataset.key = key;
+        if (ariaLabel) button.setAttribute('aria-label', ariaLabel);
+        button.innerHTML = label;
+        keyboard.appendChild(button);
+        return button;
+    };
 
-    for (let i = 0; i < keys.length; i++) {
+    KEY_ROWS.flat().forEach(kana => {
+        if (!kana) {
+            addKey('spacer', null, '').tabIndex = -1;
+            return;
+        }
         // 元のひらがなを覚えておき、モードに合わせて表示を切り替える
-        keys[i].dataset.kana = keys[i].getAttribute('data-key');
+        addKey('', kana, kana).dataset.kana = kana;
+    });
+    addKey('action mod', 'MODIFIER', '゛゜小', '濁点・半濁点・小さい字');
+    addKey('action backspace', 'BACKSPACE', BACKSPACE_ICON, '1文字消す');
+    addKey('action enter', 'ENTER', '決定');
 
-        keys[i].addEventListener('click', ({ currentTarget }) => {
-            const key = currentTarget.getAttribute('data-key');
-
-            if (key === 'ENTER') {
-                handleEnterKey();
-            } else if (key === 'BACKSPACE') {
-                handleBackspace();
-            } else if (key.trim() !== '') {
-                handleLetter(key);
-            }
-        });
-    }
+    keyboard.addEventListener('click', (e) => {
+        const button = e.target.closest('.key');
+        if (!button || button.classList.contains('spacer')) return;
+        const key = button.dataset.key;
+        if (key === 'ENTER') {
+            handleEnterKey();
+        } else if (key === 'BACKSPACE') {
+            handleBackspace();
+        } else if (key === 'MODIFIER') {
+            handleModifier();
+        } else {
+            handleLetter(key);
+        }
+    });
 
     document.addEventListener('keydown', handleKeyDown);
 }
 
 // キーボードの文字をモードに合わせる
 function updateKeyboardLabels() {
-    document.querySelectorAll('.keyboard-row button').forEach(key => {
-        const kana = key.dataset.kana;
-        if (kana === 'ENTER' || kana === 'BACKSPACE' || kana.trim() === '') return;
-
-        const letter = normalizeLetter(state.mode, kana);
-        key.setAttribute('data-key', letter);
+    document.querySelectorAll('#keyboard .key[data-kana]').forEach(key => {
+        const letter = normalizeLetter(state.mode, key.dataset.kana);
+        key.dataset.key = letter;
         key.textContent = letter;
     });
 }
 
+// 直前の字を、濁音・半濁音・小さい字に切り替える（か→が→か、は→ば→ぱ→は）
+function handleModifier() {
+    if (!canType() || state.currentCol === 0) return;
+    const col = state.currentCol - 1;
+    const next = cycleVariant(state.grid[state.currentRow][col]);
+    if (!next) return;
+
+    state.grid[state.currentRow][col] = next;
+    const tile = document.querySelector(`.tile[data-row="${state.currentRow}"][data-col="${col}"]`);
+    tile.textContent = next;
+    tile.classList.add('pop');
+    setTimeout(() => tile.classList.remove('pop'), 100);
+}
+
 // キーボード入力の処理（入力欄に書いているときと、ダイアログを開いているときは受け付けない）
 function handleKeyDown(e) {
-    if (e.target.closest?.('input') || document.querySelector('#online-modal:not(.hidden), #player-modal:not(.hidden)')) return;
+    if (e.target.closest?.('input') || document.querySelector('.modal:not(.hidden)')) return;
 
     if (e.key === 'Enter') {
         handleEnterKey();
@@ -283,15 +319,17 @@ function checkGameEnd(word) {
     }, RESULT_DELAY_MS);
 }
 
-// 新しいゲームを開始
-function startNewGame() {
+// 新しいゲームを開始（ページを開いたときは、ことばの開始の案内を出さない。ポケモンの文字数は手がかりなので出す）
+function startNewGame(announce = true) {
     state.secret = pickAnswer(state.mode);
     state.length = state.secret.length;
     resetBoard();
 
-    showMessage(state.mode === 'pokemon'
-        ? `${state.length}文字のポケモンです`
-        : '新しいゲームを開始しました');
+    if (state.mode === 'pokemon') {
+        showMessage(`${state.length}文字のポケモンです`);
+    } else if (announce) {
+        showMessage('新しいゲームを開始しました');
+    }
 }
 
 // モードに合わせて表示を切り替える
@@ -515,5 +553,5 @@ setupModeToggle();
 setupModal('info-modal', 'close-info', 'info-button');
 setupModal('player-modal', 'player-close');
 applyMode();
-startNewGame();
+startNewGame(false);
 online.init();

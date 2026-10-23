@@ -2,254 +2,147 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#121213">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#111318">
     <title>Wordle</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 字体は画面の表示を止めずに読み込む（届くまでは端末の丸ゴシックで出す） -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="title-container">
-                <h1>Wordle</h1>
-            </div>
-            <div class="buttons-container">
-                <div class="mode-toggle solo-only">
-                    <button class="mode-button" data-mode="word">ことば</button>
-                    <button class="mode-button" data-mode="pokemon">ポケモン</button>
-                </div>
-                <button id="info-button" class="info-button icon-button" aria-label="遊び方">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9"/>
-                        <path d="M9.5 9.5a2.5 2.5 0 0 1 4.9.7c0 1.7-2.4 2.1-2.4 3.6"/>
-                        <circle cx="12" cy="17" r="0.6" fill="currentColor"/>
-                    </svg>
+    <div class="app">
+        <header class="header">
+            <h1 class="logo">Wordle</h1>
+            <div class="header-buttons">
+                <button id="new-game" type="button" class="icon-button solo-only" title="新しいゲーム" aria-label="新しいゲーム">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg>
                 </button>
-                <button id="new-game" class="control-button solo-only">新規</button>
-                <button id="online-button" class="control-button online-button solo-only">対戦</button>
-                <button id="room-button" class="control-button online-button online-only">部屋</button>
+                <button id="info-button" type="button" class="icon-button" title="遊び方" aria-label="遊び方">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 4.9.7c0 1.7-2.4 2.1-2.4 3.6"/><circle class="icon-dot" cx="12" cy="17" r="0.6"/></svg>
+                </button>
+                <button id="online-button" type="button" class="pill-button online-color solo-only">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M18 13.8c1.8.6 3 2.4 3 5.2"/></svg>
+                    <span>対戦</span>
+                </button>
+                <button id="room-button" type="button" class="pill-button online-color online-only">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3 3 0 0 1 0 5.6"/><path d="M18 13.8c1.8.6 3 2.4 3 5.2"/></svg>
+                    <span>部屋</span>
+                </button>
             </div>
-        </div>
-        <div id="info-modal" class="hidden">
-            <div class="modal-content">
-                <h2>遊び方</h2>
-                <p id="rule-text">5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
-                <p class="rule-note">対戦では、全員が1つずつ答えを出し、そろったらいっせいに結果を公開します。先に当てた人の勝ちです。</p>
-                <div class="example">
-                    <div class="example-row">
-                        <div class="example-tile correct">あ</div>
-                        <div class="example-tile">い</div>
-                        <div class="example-tile">う</div>
-                        <div class="example-tile">え</div>
-                        <div class="example-tile">お</div>
-                    </div>
-                    <p>「あ」は正しい位置にあります（緑色）</p>
-                </div>
-                <div class="example">
-                    <div class="example-row">
-                        <div class="example-tile">か</div>
-                        <div class="example-tile present">き</div>
-                        <div class="example-tile">く</div>
-                        <div class="example-tile">け</div>
-                        <div class="example-tile">こ</div>
-                    </div>
-                    <p>「き」は単語に含まれますが位置が違います（黄色）</p>
-                </div>
-                <div class="example">
-                    <div class="example-row">
-                        <div class="example-tile">さ</div>
-                        <div class="example-tile">し</div>
-                        <div class="example-tile absent">す</div>
-                        <div class="example-tile">せ</div>
-                        <div class="example-tile">そ</div>
-                    </div>
-                    <p>「す」は単語に含まれていません（灰色）</p>
-                </div>
-                <button id="close-info" type="button">閉じる</button>
+        </header>
+
+        <div class="subbar">
+            <div class="mode-toggle solo-only" role="group" aria-label="モード">
+                <button class="mode-button" type="button" data-mode="word">ことば</button>
+                <button class="mode-button" type="button" data-mode="pokemon">ポケモン</button>
             </div>
-        </div>
-        <div id="online-modal" class="hidden">
-            <div class="modal-content online-content">
-                <div class="online-head">
-                    <h2>オンライン対戦</h2>
-                    <button id="online-close" type="button" class="close-x" aria-label="閉じる">×</button>
-                </div>
-                <div id="online-entry">
-                    <label class="online-field">
-                        <span>名前</span>
-                        <input id="online-name" maxlength="12" autocomplete="nickname">
-                    </label>
-                    <button id="online-create" type="button" class="primary-button">部屋を作る</button>
-                    <div class="online-join">
-                        <input id="online-code" inputmode="numeric" autocomplete="off" placeholder="部屋番号">
-                        <button id="online-join" type="button" class="primary-button">参加</button>
-                    </div>
-                </div>
-                <div id="online-room" class="hidden">
-                    <div class="online-code-row">
-                        <span>部屋番号</span>
-                        <strong id="online-room-code"></strong>
-                        <button id="online-invite" type="button" class="secondary-button">招待URLをコピー</button>
-                    </div>
-                    <p id="online-result" class="online-result hidden"></p>
-                    <ul id="online-players"></ul>
-                    <div class="mode-toggle online-mode">
-                        <button class="mode-button" data-online-mode="word">ことば</button>
-                        <button class="mode-button" data-online-mode="pokemon">ポケモン</button>
-                    </div>
-                    <div class="online-actions">
-                        <button id="online-start" type="button" class="primary-button">開始</button>
-                        <button id="online-ready" type="button" class="primary-button">もう1回</button>
-                        <button id="online-back" type="button" class="secondary-button">ロビーへ</button>
-                        <button id="online-leave" type="button" class="secondary-button">部屋を出る</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="player-modal" class="hidden">
-            <div class="modal-content player-content">
-                <div class="online-head">
-                    <h2 id="player-name"></h2>
-                    <button id="player-close" type="button" class="close-x" aria-label="閉じる">×</button>
-                </div>
-                <div id="player-board"></div>
-            </div>
-        </div>
-        <div id="game-container">
             <div id="opponents" class="hidden"></div>
+        </div>
+
+        <main id="board-area">
             <div id="board"></div>
-            <div id="keyboard">
-                <div class="keyboard-row">
-                    <button data-key="わ">わ</button>
-                    <button data-key="ら">ら</button>
-                    <button data-key="や">や</button>
-                    <button data-key="ま">ま</button>
-                    <button data-key="は">は</button>
-                    <button data-key="な">な</button>
-                    <button data-key="た">た</button>
-                    <button data-key="さ">さ</button>
-                    <button data-key="か">か</button>
-                    <button data-key="あ">あ</button>
+            <div id="message" role="status" aria-live="polite"></div>
+        </main>
+
+        <div id="keyboard"></div>
+    </div>
+
+    <div id="info-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-head">
+                <h2>遊び方</h2>
+                <button id="close-info" type="button" class="close-x" aria-label="閉じる">×</button>
+            </div>
+            <p id="rule-text">5文字のひらがなの単語を当ててください。10回まで挑戦できます。</p>
+            <div class="example">
+                <div class="example-row">
+                    <div class="example-tile correct">あ</div>
+                    <div class="example-tile">い</div>
+                    <div class="example-tile">う</div>
+                    <div class="example-tile">え</div>
+                    <div class="example-tile">お</div>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="を">を</button>
-                    <button data-key="り">り</button>
-                    <button data-key="　">　</button>
-                    <button data-key="み">み</button>
-                    <button data-key="ひ">ひ</button>
-                    <button data-key="に">に</button>
-                    <button data-key="ち">ち</button>
-                    <button data-key="し">し</button>
-                    <button data-key="き">き</button>
-                    <button data-key="い">い</button>
+                <p>「あ」は正しい位置にあります</p>
+            </div>
+            <div class="example">
+                <div class="example-row">
+                    <div class="example-tile">か</div>
+                    <div class="example-tile present">き</div>
+                    <div class="example-tile">く</div>
+                    <div class="example-tile">け</div>
+                    <div class="example-tile">こ</div>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="ん">ん</button>
-                    <button data-key="る">る</button>                    
-                    <button data-key="ゆ">ゆ</button>
-                    <button data-key="む">む</button>
-                    <button data-key="ふ">ふ</button>
-                    <button data-key="ぬ">ぬ</button>
-                    <button data-key="つ">つ</button>
-                    <button data-key="す">す</button>
-                    <button data-key="く">く</button>
-                    <button data-key="う">う</button>
+                <p>「き」は含まれますが、位置が違います</p>
+            </div>
+            <div class="example">
+                <div class="example-row">
+                    <div class="example-tile">さ</div>
+                    <div class="example-tile">し</div>
+                    <div class="example-tile absent">す</div>
+                    <div class="example-tile">せ</div>
+                    <div class="example-tile">そ</div>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="れ">れ</button>
-                    <button data-key="　">　</button>
-                    <button data-key="め">め</button>
-                    <button data-key="へ">へ</button>
-                    <button data-key="ね">ね</button>
-                    <button data-key="て">て</button>
-                    <button data-key="せ">せ</button>
-                    <button data-key="け">け</button>
-                    <button data-key="え">え</button>
+                <p>「す」は含まれません</p>
+            </div>
+            <p class="rule-note">濁点・半濁点・小さい字は、入れた直後に<span class="nowrap">「゛゜小」</span>で切り替えます（か→が、は→ば→ぱ、つ→っ→づ）。キーの角の点は、その字の濁点や小さい字の判定です。</p>
+            <p class="rule-note">対戦では、全員が1つずつ答えを出し、そろったらいっせいに結果を公開します。先に当てた人の勝ちです。</p>
+        </div>
+    </div>
+
+    <div id="online-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-head">
+                <h2>オンライン対戦</h2>
+                <button id="online-close" type="button" class="close-x" aria-label="閉じる">×</button>
+            </div>
+            <div id="online-entry">
+                <label class="online-field">
+                    <span>名前</span>
+                    <input id="online-name" maxlength="12" autocomplete="nickname">
+                </label>
+                <button id="online-create" type="button" class="primary-button">部屋を作る</button>
+                <div class="online-join">
+                    <input id="online-code" inputmode="numeric" autocomplete="off" placeholder="部屋番号">
+                    <button id="online-join" type="button" class="primary-button">参加</button>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="ー">ー</button>
-                    <button data-key="ろ">ろ</button>
-                    <button data-key="よ">よ</button>
-                    <button data-key="も">も</button>
-                    <button data-key="ほ">ほ</button>
-                    <button data-key="の">の</button>
-                    <button data-key="と">と</button>
-                    <button data-key="そ">そ</button>
-                    <button data-key="こ">こ</button>
-                    <button data-key="お">お</button>
+            </div>
+            <div id="online-room" class="hidden">
+                <div class="online-code-row">
+                    <span>部屋番号</span>
+                    <strong id="online-room-code"></strong>
+                    <button id="online-invite" type="button" class="secondary-button">招待URLをコピー</button>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ゃ">ゃ</button>
-                    <button data-key="ぱ">ぱ</button>
-                    <button data-key="ば">ば</button>
-                    <button data-key="　">　</button>
-                    <button data-key="だ">だ</button>
-                    <button data-key="ざ">ざ</button>
-                    <button data-key="が">が</button>
-                    <button data-key="ぁ">ぁ</button>
+                <p id="online-result" class="online-result hidden"></p>
+                <ul id="online-players"></ul>
+                <div class="mode-toggle online-mode">
+                    <button class="mode-button" type="button" data-online-mode="word">ことば</button>
+                    <button class="mode-button" type="button" data-online-mode="pokemon">ポケモン</button>
                 </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ぴ">ぴ</button>
-                    <button data-key="び">び</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ぢ">ぢ</button>
-                    <button data-key="じ">じ</button>
-                    <button data-key="ぎ">ぎ</button>
-                    <button data-key="ぃ">ぃ</button>
-                </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="ゔ">ゔ</button>
-                    <button data-key="ゅ">ゅ</button>
-                    <button data-key="ぷ">ぷ</button>
-                    <button data-key="ぶ">ぶ</button>
-                    <button data-key="っ">っ</button>
-                    <button data-key="づ">づ</button>
-                    <button data-key="ず">ず</button>
-                    <button data-key="ぐ">ぐ</button>
-                    <button data-key="ぅ">ぅ</button>
-                </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ぺ">ぺ</button>
-                    <button data-key="べ">べ</button>
-                    <button data-key="　">　</button>
-                    <button data-key="で">で</button>
-                    <button data-key="ぜ">ぜ</button>
-                    <button data-key="げ">げ</button>
-                    <button data-key="ぇ">ぇ</button>
-                </div>
-                <div class="keyboard-row">
-                    <button data-key="　">　</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ょ">ょ</button>
-                    <button data-key="ぽ">ぽ</button>
-                    <button data-key="ぼ">ぼ</button>
-                    <button data-key="　">　</button>
-                    <button data-key="ど">ど</button>
-                    <button data-key="ぞ">ぞ</button>
-                    <button data-key="ご">ご</button>
-                    <button data-key="ぉ">ぉ</button>
-                </div>
-                <div class="keyboard-row">
-                    <button data-key="BACKSPACE" class="wide-button">⌫</button>
-                    <button data-key="ENTER" class="wide-button">決定</button>
+                <div class="online-actions">
+                    <button id="online-start" type="button" class="primary-button">開始</button>
+                    <button id="online-ready" type="button" class="primary-button">もう1回</button>
+                    <button id="online-back" type="button" class="secondary-button">ロビーへ</button>
+                    <button id="online-leave" type="button" class="secondary-button">部屋を出る</button>
                 </div>
             </div>
         </div>
-        <div id="message"></div>
     </div>
+
+    <div id="player-modal" class="modal hidden">
+        <div class="modal-content player-content">
+            <div class="modal-head">
+                <h2 id="player-name"></h2>
+                <button id="player-close" type="button" class="close-x" aria-label="閉じる">×</button>
+            </div>
+            <div id="player-board"></div>
+        </div>
+    </div>
+
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
