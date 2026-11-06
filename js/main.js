@@ -547,6 +547,10 @@ function setupModal(modalId, closeId, openButtonId) {
 
 // ===== 初期化 =====
 
+// 画面を拡大させない（ふつうは styles.css の touch-action で止まる。iOS は viewport の user-scalable を無視するので、2本指の操作を止める）
+// document 全体の touchmove は止めない（passive でない touchmove があると、スクロールの始まりが遅れるため）
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+
 document.getElementById('new-game').addEventListener('click', startNewGame);
 setupKeyboard();
 setupModeToggle();
