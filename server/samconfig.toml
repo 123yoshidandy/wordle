@@ -5,4 +5,5 @@ stack_name = "wordle-online"
 region = "ap-northeast-1"
 capabilities = "CAPABILITY_IAM"
 resolve_s3 = true
+s3_prefix = "wordle-online"
 confirm_changeset = true
