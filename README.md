@@ -22,6 +22,7 @@
 - 物理キーボードでの入力対応
 - レスポンシブデザイン
 - 新しいゲーム機能
+- スマホのブラウザのメニューから「ホーム画面に追加」すると、アプリのように全画面で開ける。一度開いたあとは、オフラインでも1人プレイができる
 
 ## 使い方
 
@@ -44,6 +45,7 @@
 - `js/online.js`：オンライン対戦の部屋と通信
 - `js/online-config.js`：本番のサーバーの URL
 - `js/words.js` / `js/pokemon-names.js`：答えの一覧
+- `sw.js` / `manifest.webmanifest`：ホーム画面に追加したときの設定と、オフラインで開くためのキャッシュ（自分のファイルはネットワークを先に使う）
 - `server/src/game-definition.js`：オンライン対戦の中身（netplay-kit のゲームの定義）
 - `server/template.yaml` / `server/samconfig.toml`：AWS SAM の設定（スタック `wordle-online`、東京リージョン）
 - `test/`：テスト
